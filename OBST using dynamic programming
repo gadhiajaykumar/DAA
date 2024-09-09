@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <limits.h>
+int obst(int keys[], int freq[], int i, int j) {
+    if (i > j) return 0;
+    int min_cost = INT_MAX;
+    for (int r = i; r <= j; r++) {
+        int left_cost = obst(keys, freq, i, r - 1);
+        int right_cost = obst(keys, freq, r + 1, j);
+
+        int expected_time = freq[r] + (i == 0 ? 0 : freq[i - 1]) + (j == 9 ? 0 : freq[j + 1]);
+
+        min_cost = (min_cost < left_cost + right_cost + expected_time) ? min_cost : left_cost + right_cost + expected_time;
+    }
+
+    return min_cost;
+}
+
+void construct_obst(int keys[], int freq[], int i, int j, int *root) {
+
+    if (i > j) return;
+
+    int min_cost = INT_MAX;
+    int root_index = -1;
+    for (int r = i; r <= j; r++) {
+        int left_cost = obst(keys, freq, i, r - 1);
+        int right_cost = obst(keys, freq, r + 1, j);
+        int expected_time = freq[r] + (i == 0 ? 0 : freq[i - 1]) + (j == 9 ? 0 : freq[j + 1]);
+        if (left_cost + right_cost + expected_time < min_cost) {
+            min_cost = left_cost + right_cost + expected_time;
+            root_index = r;
+        }
+    }
+    *root = root_index;
+
+    construct_obst(keys, freq, i, root_index - 1, &keys[root_index - 1]);
+    construct_obst(keys, freq, root_index + 1, j, &keys[root_index + 1]);
+}
+
+int main() {
+	printf("G.Ajay kumar-192210590\n");
+    int keys[] = {10, 12, 16, 21, 25, 30, 36, 42, 47, 52};
+    int freq[] = {5, 8, 6, 3, 2, 6, 1, 5, 2, 1};
+
+    int n = sizeof(keys) / sizeof(keys[0]);
+
+    int root;
+    construct_obst(keys, freq, 0, n - 1, &root);
+
+    printf("Optimal Binary Search Tree Root: %d\n", keys[root]);
+
+    return 0;
+}
