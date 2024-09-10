@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+int board[10][10] = {0};
+int n;
+
+bool isSafe(int row, int col) {
+    for (int i = 0; i < col; i++) {
+        if (board[row][i] == 1)
+            return false;
+    }
+
+    for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j] == 1)
+            return false;
+    }
+
+    for (int i = row, j = col; j >= 0 && i < n; i++, j--) {
+        if (board[i][j] == 1)
+            return false;
+    }
+
+    return true;
+}
+
+bool solveNQueens(int col) {
+    if (col >= n)
+        return true;
+
+    for (int i = 0; i < n; i++) {
+        if (isSafe(i, col)) {
+            board[i][col] = 1;
+
+            if (solveNQueens(col + 1))
+                return true;
+
+            board[i][col] = 0;
+        }
+    }
+
+    return false;
+}
+
+void printSolution() {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", board[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+	printf("G.Ajay kumar-192210590\n");
+    printf("Enter the number of queens: ");
+    scanf("%d", &n);
+
+    if (solveNQueens(0)) {
+        printSolution();
+    } else {
+        printf("Solution does not exist\n");
+    }
+
+    return 0;
+}
